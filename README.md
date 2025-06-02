@@ -12,38 +12,20 @@ package integration_test
 import (
 	"testing"
 
-	"github.com/ellanetworks/core-k8s/integration/juju"
+	"github.com/gruyaume/go-juju/juju"
 )
 
 const (
-	CharmPath       = "../ella-core-k8s_amd64.charm"
 	JujuModelName   = "test-model"
-	CloudName       = "test-cloud"
 	ApplicationName = "ella-core"
 	EllaCoreImage   = "ghcr.io/ellanetworks/ella-core:v0.0.15"
+	CharmPath       = "./ella-core-k8s_amd64.charm"
 )
 
-func TestIntegration(t *testing.T) {
+func TestCharmIntegration(t *testing.T) {
 	jujuClient := juju.New()
 
-	err := jujuClient.AddK8s(&juju.AddK8sOptions{
-		Name:   CloudName,
-		Client: true,
-	})
-	if err != nil {
-		t.Fatalf("Failed to add k8s: %v", err)
-	}
-
-	t.Log("K8s cloud is added")
-
-	err = jujuClient.Bootstrap(&juju.BootstrapOptions{
-		CloudName: CloudName,
-	})
-	if err != nil {
-		t.Fatalf("Failed to bootstrap: %v", err)
-	}
-
-	err = jujuClient.AddModel(&juju.AddModelOptions{
+	err := jujuClient.AddModel(&juju.AddModelOptions{
 		Name: JujuModelName,
 	})
 	if err != nil {
