@@ -11,6 +11,7 @@ const (
 type DeployOptions struct {
 	Charm           string
 	ApplicationName string
+	Trust           bool              // Optional trust flag for the charm
 	Resources       map[string]string // Optional resources for the charm
 }
 
@@ -26,6 +27,10 @@ func (j Juju) Deploy(opts *DeployOptions) error {
 
 	for resource, value := range opts.Resources {
 		args = append(args, "--resource", fmt.Sprintf("%s=%s", resource, value))
+	}
+
+	if opts.Trust {
+		args = append(args, "--trust")
 	}
 
 	_, err := j.Runner.Run(args...)
