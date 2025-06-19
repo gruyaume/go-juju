@@ -9,16 +9,12 @@ const (
 	debugLogCommand = "debug-log"
 )
 
-type WriteDebugLogOptions struct {
-	FileName string
-	Replay   bool
+type PrintDebugLogOptions struct {
+	Replay bool
 }
 
-func (j Juju) WriteDebugLog(opts *WriteDebugLogOptions) error {
+func (j Juju) PrintDebugLog(opts *PrintDebugLogOptions) error {
 	args := []string{debugLogCommand}
-	if opts.FileName == "" {
-		return fmt.Errorf("file name is required")
-	}
 
 	if opts.Replay {
 		args = append(args, "--replay")
@@ -31,8 +27,8 @@ func (j Juju) WriteDebugLog(opts *WriteDebugLogOptions) error {
 		return fmt.Errorf("failed to get logs: %w", err)
 	}
 
-	if err := os.WriteFile(opts.FileName, output, 0644); err != nil {
-		return fmt.Errorf("failed to write debug log to file %s: %w", opts.FileName, err)
+	if _, err := os.Stdout.Write(output); err != nil {
+		return fmt.Errorf("failed to write logs to stdout: %w", err)
 	}
 
 	return nil
